@@ -3,10 +3,7 @@
 let recode = new WebSocket("ws://localhost:31371");
 let server = new WebSocket("ws://localhost:8080");
 
-
 server.onmessage = function(msg) {
     recode.send(JSON.stringify({"type": "nbt", "data": '{Count:1b,id:"minecraft:barrel",tag:{PublicBukkitValues:{"hypercube:data":"' + msg.data + '"}}}', "source": "DFSocket"}));
 }
-
-
 </script>
