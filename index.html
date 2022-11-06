@@ -2,8 +2,24 @@
 <script>
 let recode = new WebSocket("ws://localhost:31371");
 let server = new WebSocket("ws://localhost:8080");
+let connected = false;
+let preInitMessages = [];
 
+recode.onopen = function() {
+    connected = true;
+	preInitMessages.forEach(msg => {
+		sendData(msg);
+	});
+}
 server.onmessage = function(msg) {
-    recode.send(JSON.stringify({"type": "nbt", "data": '{Count:1b,id:"minecraft:barrel",tag:{PublicBukkitValues:{"hypercube:data":"' + msg.data + '"}}}', "source": "DFSocket"}));
+    sendData(msg);
+	if (connected) {
+		sendData(msg);
+	} else {
+		preInitMessages.push(msg);
+	}
+}
+function sendData(msg) {
+	recode.send(JSON.stringify({"type": "nbt", "data": '{Count:1b,id:"minecraft:barrel",tag:{PublicBukkitValues:{"hypercube:data":"' + msg.data + '"}}}', "source": "DFSocket"}));
 }
 </script>
